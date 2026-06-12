@@ -1,0 +1,93 @@
+/* ================================
+   VARIABLES DE COULEURS
+================================ */
+:root {
+  --dark-1: #0B162C;
+  --dark-2: #1C2942;
+  --dark-3: #3B556D;
+  --accent: #5FC2BA;
+  --white: #FFFFFF;
+}
+
+/* ================================
+   RESET DES LIENS
+================================ */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+/* ================================
+   LIENS HORS SIDEBAR = BOUTONS
+================================ */
+/* Tous les liens hors sidebar deviennent des boutons */
+body :not(.sidebar) > a,
+body :not(.sidebar) a {
+  display: inline-block;
+  padding: 0.45rem 0.9rem;
+  background-color: var(--accent);
+  color: var(--dark-1);
+  border-radius: 4px;
+  transition: background 0.2s;
+  font-weight: 500;
+}
+
+/* Hover */
+body :not(.sidebar) > a:hover,
+body :not(.sidebar) a:hover {
+  background-color: #4bb3a9;
+}
+
+/* ================================
+   NAVBAR
+================================ */
+.navbar a.nav-link {
+  background: none;
+  color: var(--white);
+  padding: 0.4rem 0.6rem;
+  border-radius: 4px;
+}
+
+.navbar a.nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 1.5rem;
+}
+
+.stat-number {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--dark-1);
+  margin-top: 0.5rem;
+}
+/* POPUP OVERLAY */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+/* POPUP CARD */
+.popup-card {
+  background: var(--white);
+  padding: 2rem;
+  border-radius: 8px;
+  width: 420px;
+  max-width: 90%;
+  border: 1px solid var(--dark-3);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}

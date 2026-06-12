@@ -1,0 +1,140 @@
+/* ================================
+   LAYOUT GLOBAL
+================================ */
+.layout-container {
+  min-height: 100vh;
+  display: flex;
+  background-color: var(--white);
+}
+
+/* ================================
+   SIDEBAR
+================================ */
+.sidebar {
+  width: 230px;
+  background-color: var(--dark-1);
+  color: var(--white);
+  min-height: 100vh;
+  padding: 1.5rem 1rem;
+  box-sizing: border-box;
+}
+
+.sidebar h3 {
+  font-size: 1.35rem;
+  font-weight: 600;
+  margin-bottom: 1.3rem;
+  color: var(--white);
+}
+
+.sidebar .nav-link {
+  display: block;
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  border-radius: 4px;
+  margin-bottom: 0.3rem;
+  transition: background 0.2s, padding-left 0.2s;
+  color: var(--white);
+}
+
+.sidebar .nav-link:hover {
+  background-color: var(--dark-2);
+  padding-left: 1rem;
+}
+
+.sidebar .nav-link.active {
+  background-color: var(--dark-3);
+  font-weight: 600;
+}
+
+/* ================================
+   MAIN CONTENT
+================================ */
+.main-content {
+  margin-left: 230px;
+  width: calc(100% - 230px);
+  display: flex;
+  flex-direction: column;
+  background-color: var(--white);
+}
+
+/* ================================
+   NAVBAR
+================================ */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  border-bottom: 1px solid var(--dark-3);
+  background-color: var(--dark-2);
+}
+
+.navbar .nav-link {
+  color: var(--white) !important;
+}
+
+/* Structure interne du header */
+.navbar-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+/* Zones */
+.navbar-left {
+  flex: 1;
+}
+
+.navbar-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.navbar-right {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+/* Style du header */
+.custom-navbar {
+  background-color: var(--dark-2);
+  border-bottom: 1px solid var(--dark-3);
+}
+
+/* Liens */
+.custom-navbar .nav-link {
+  color: var(--white);
+  font-weight: 500;
+}
+
+.custom-navbar .nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+
+/* ================================
+   PAGE CONTENT
+================================ */
+main {
+  padding: 2rem;
+}
+
+/* ================================
+   RESPONSIVE
+================================ */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    min-height: auto;
+  }
+
+  .main-content {
+    margin-left: 0;
+    width: 100%;
+  }
+}
