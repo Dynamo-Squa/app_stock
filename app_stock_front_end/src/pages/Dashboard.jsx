@@ -8,26 +8,39 @@ export default function Dashboard() {
     totalStock: 0,
   });
 
+  const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // ============================
-  //   FETCH STATS (GET /stats)
+  //   FETCH STATS + PRODUCTS
   // ============================
-  const fetchStats = async () => {
+  const fetchData = async () => {
     try {
-      const response = await fetch("http://localhost:5000/stats");
-      const data = await response.json();
-      setStats(data);
+      const resStats = await fetch("http://localhost:5000/stats");
+      const resProducts = await fetch("http://localhost:5000/products");
+
+      const dataStats = await resStats.json();
+      const dataProducts = await resProducts.json();
+
+      setStats(dataStats);
+      setProducts(dataProducts);
     } catch (error) {
-      console.error("Erreur lors du chargement des statistiques :", error);
+      console.error("Erreur lors du chargement du dashboard :", error);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchStats();
+    fetchData();
   }, []);
+
+  // ============================
+  //   CALCUL STOCK BAS
+  // ============================
+  const lowStockCount = products.filter(
+    (p) => p.quantity <= (p.quantite_min || 5)
+  ).length;
 
   return (
     <Layout>
@@ -37,6 +50,7 @@ export default function Dashboard() {
 
       {!loading && (
         <div className="dashboard-grid">
+
           <div className="card-global">
             <h4>Total Produits</h4>
             <p className="stat-number">{stats.totalProducts}</p>
@@ -51,6 +65,13 @@ export default function Dashboard() {
             <h4>Stock Total</h4>
             <p className="stat-number">{stats.totalStock}</p>
           </div>
+
+          {/* INDICATEUR STOCK BAS */}
+          <div className={`card-global ${lowStockCount > 0 ? "kpi-alert" : ""}`}>
+            <h4>Stock bas</h4>
+            <p className="stat-number">{lowStockCount}</p>
+          </div>
+
         </div>
       )}
     </Layout>

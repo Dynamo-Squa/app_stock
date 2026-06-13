@@ -8,6 +8,8 @@ import AjouterProduit from "./pages/AjouterProduit.jsx";
 import Categories from "./pages/Categories.jsx";
 import User from "./pages/User.jsx";
 import Logout from "./pages/Logout.jsx";
+import Mouvements from "./pages/Mouvements.jsx";
+
 
 // ============================
 //   PROTECTION DES ROUTES
@@ -85,6 +87,15 @@ function App() {
           element={
             <PrivateRoute>
               <Logout />
+            </PrivateRoute>
+          }
+        />
+        {/* MOUVEMENTS */}
+        <Route
+          path="/mouvements"
+          element={
+            <PrivateRoute>
+              <Mouvements />
             </PrivateRoute>
           }
         />

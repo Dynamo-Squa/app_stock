@@ -6,7 +6,7 @@ export default function Produits() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // POPUP MODIFICATION
+  // POPUP MODIFICATION PRODUIT
   const [showEditPopup, setShowEditPopup] = useState(false);
   const [editProduct, setEditProduct] = useState({
     id: null,
@@ -16,6 +16,14 @@ export default function Produits() {
     quantity: "",
     unit: "",
     category: "",
+  });
+
+  // POPUP ALIMENTER STOCK
+  const [showStockPopup, setShowStockPopup] = useState(false);
+  const [stockForm, setStockForm] = useState({
+    product_id: "",
+    quantite: "",
+    commentaire: "",
   });
 
   // ============================
@@ -83,7 +91,6 @@ export default function Produits() {
         body: JSON.stringify(editProduct),
       });
 
-      // Mise à jour instantanée
       setProducts(
         products.map((p) =>
           p.id === editProduct.id ? editProduct : p
@@ -94,6 +101,44 @@ export default function Produits() {
     } catch (err) {
       console.error("Erreur modification :", err);
       alert("Impossible de modifier le produit.");
+    }
+  };
+
+  // ============================
+  //   OUVRIR POPUP ALIMENTER STOCK
+  // ============================
+  const openStockPopup = (p) => {
+    setStockForm({
+      product_id: p.id,
+      quantite: "",
+      commentaire: "",
+    });
+    setShowStockPopup(true);
+  };
+
+  // ============================
+  //   AJOUT MOUVEMENT (ENTRÉE)
+  // ============================
+  const handleStockSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      await fetch("http://localhost:5000/mouvements", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...stockForm,
+          type_mouvement: "ENTREE",
+        }),
+      });
+
+      // Recharger les produits après mise à jour du stock
+      fetchProducts();
+
+      setShowStockPopup(false);
+    } catch (err) {
+      console.error("Erreur mouvement :", err);
+      alert("Impossible d'alimenter le stock.");
     }
   };
 
@@ -133,9 +178,23 @@ export default function Produits() {
                 <td className="fw-bold">{p.name}</td>
                 <td>{p.description}</td>
                 <td>{p.price} €</td>
-                <td>{p.quantity} {p.unit}</td>
+                <td className={p.quantity <= (p.quantite_min || 5) ? "stock-low" : ""}>
+                  {p.quantity} {p.unit}
+
+                  {p.quantity <= (p.quantite_min || 5) && (
+                    <span className="badge-low">Stock bas</span>
+                  )}
+                </td>
                 <td>{p.category}</td>
-                <td>
+                <td className="d-flex flex-column gap-2">
+
+                  <button
+                    className="btn-accent"
+                    onClick={() => openStockPopup(p)}
+                  >
+                    Alimenter stock
+                  </button>
+
                   <button
                     className="btn-warning-custom"
                     onClick={() => openEditPopup(p)}
@@ -149,6 +208,7 @@ export default function Produits() {
                   >
                     🗑
                   </button>
+
                 </td>
               </tr>
             ))}
@@ -244,6 +304,57 @@ export default function Produits() {
           </div>
         </div>
       )}
+
+      {/* ============================
+          POP-UP ALIMENTER STOCK
+      ============================ */}
+      {showStockPopup && (
+        <div className="popup-overlay">
+          <div className="popup-card">
+            <h3>Alimenter le stock</h3>
+
+            <form onSubmit={handleStockSubmit} className="d-flex flex-column gap-3">
+
+              <input
+                type="number"
+                className="form-control"
+                placeholder="Quantité à ajouter"
+                value={stockForm.quantite}
+                onChange={(e) =>
+                  setStockForm({ ...stockForm, quantite: e.target.value })
+                }
+                required
+              />
+
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Commentaire (optionnel)"
+                value={stockForm.commentaire}
+                onChange={(e) =>
+                  setStockForm({ ...stockForm, commentaire: e.target.value })
+                }
+              />
+
+              <div className="d-flex justify-content-end gap-2">
+                <button
+                  type="button"
+                  className="btn-danger-custom"
+                  onClick={() => setShowStockPopup(false)}
+                >
+                  Annuler
+                </button>
+
+                <button type="submit" className="btn-accent">
+                  Ajouter
+                </button>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      )}
+
     </Layout>
   );
 }
