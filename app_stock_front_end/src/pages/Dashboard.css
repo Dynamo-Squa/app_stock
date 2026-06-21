@@ -1,0 +1,60 @@
+/* ==========================================================================
+   PAGE: DASHBOARD (TABLEAU DE BORD) - RESPONSIVE
+   ========================================================================== */
+
+/* En-tête de la page */
+.page-header {
+  margin-bottom: 2.5rem;
+}
+
+.page-header h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--white);
+  margin: 0;
+}
+
+.page-subtitle {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin-top: 0.4rem;
+}
+
+/* Grille de cartes KPI (Responsive native par le Grid auto-fit) */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  width: 100%;
+}
+
+/* Grandes variations de couleur pour les chiffres */
+.stat-number.style-danger {
+  color: var(--danger);
+}
+
+.stat-number.style-success {
+  color: #4BD396;
+}
+
+/* Container de chargement centré */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 40vh;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* Media Queries pour petits écrans */
+@media (max-width: 576px) {
+  .page-header h1 {
+    font-size: 1.5rem; /* Titre un peu plus petit sur mobile */
+  }
+  
+  .dashboard-grid {
+    grid-template-columns: 1fr; /* Une seule colonne parfaite sur smartphone */
+    gap: 1rem;
+  }
+}

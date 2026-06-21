@@ -1,79 +1,84 @@
 import Layout from "../components/Layout";
 import { useEffect, useState } from "react";
+import "./Dashboard.css"; // Importation du CSS dédié à cette page
 
 export default function Dashboard() {
-  const [stats, setStats] = useState({
-    totalProducts: 0,
-    totalCategories: 0,
-    totalStock: 0,
-  });
-
-  const [products, setProducts] = useState([]);
+  const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // ============================
-  //   FETCH STATS + PRODUCTS
-  // ============================
-  const fetchData = async () => {
+  const fetchDashboard = async () => {
     try {
-      const resStats = await fetch("http://localhost:5000/stats");
-      const resProducts = await fetch("http://localhost:5000/products");
+      const res = await fetch("http://localhost:5000/api/dashboard", {
+        headers: {
+          "Authorization": "Bearer " + localStorage.getItem("token")
+        }
+      });
 
-      const dataStats = await resStats.json();
-      const dataProducts = await resProducts.json();
-
-      setStats(dataStats);
-      setProducts(dataProducts);
-    } catch (error) {
-      console.error("Erreur lors du chargement du dashboard :", error);
+      const json = await res.json();
+      setData(json);
+    } catch (err) {
+      console.error("Erreur dashboard :", err);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchData();
+    fetchDashboard();
   }, []);
 
-  // ============================
-  //   CALCUL STOCK BAS
-  // ============================
-  const lowStockCount = products.filter(
-    (p) => p.quantity <= (p.quantite_min || 5)
-  ).length;
+  if (loading) {
+    return (
+      <Layout>
+        <div className="loading-container">
+          <p>Chargement des statistiques...</p>
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
-      <h1 className="mb-4">Dashboard</h1>
+      <div className="page-header">
+        <h1>Tableau de bord</h1>
+        <p className="page-subtitle">Vue d'ensemble de l'activité de votre stock</p>
+      </div>
 
-      {loading && <p>Chargement des statistiques...</p>}
+      <div className="dashboard-grid">
 
-      {!loading && (
-        <div className="dashboard-grid">
-
-          <div className="card-global">
-            <h4>Total Produits</h4>
-            <p className="stat-number">{stats.totalProducts}</p>
-          </div>
-
-          <div className="card-global">
-            <h4>Total Catégories</h4>
-            <p className="stat-number">{stats.totalCategories}</p>
-          </div>
-
-          <div className="card-global">
-            <h4>Stock Total</h4>
-            <p className="stat-number">{stats.totalStock}</p>
-          </div>
-
-          {/* INDICATEUR STOCK BAS */}
-          <div className={`card-global ${lowStockCount > 0 ? "kpi-alert" : ""}`}>
-            <h4>Stock bas</h4>
-            <p className="stat-number">{lowStockCount}</p>
-          </div>
-
+        {/* Total Produits */}
+        <div className="kpi-card">
+          <h3>Total produits</h3>
+          <p className="stat-number">{data?.totalProduits || 0}</p>
         </div>
-      )}
+
+        {/* Stock Bas (S'illumine en alerte si > 0) */}
+        <div className={`kpi-card ${data?.stockBas > 0 ? "kpi-alert" : ""}`}>
+          <h3>Stock bas</h3>
+          <p className="stat-number style-danger">{data?.stockBas || 0}</p>
+        </div>
+
+        {/* Valeur du Stock */}
+        <div className="kpi-card">
+          <h3>Valeur du stock</h3>
+          <p className="stat-number">
+            {new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(data?.valeurStock || 0)}
+          </p>
+        </div>
+
+        {/* Entrées */}
+        <div className="kpi-card">
+          <h3>Entrées (7 jours)</h3>
+          <p className="stat-number style-success">+{data?.entrees7jours || 0}</p>
+        </div>
+
+        {/* Sorties */}
+        <div className="kpi-card">
+          <h3>Sorties (7 jours)</h3>
+          <p className="stat-number style-danger">-{data?.sorties7jours || 0}</p>
+        </div>
+
+      </div>
     </Layout>
   );
 }

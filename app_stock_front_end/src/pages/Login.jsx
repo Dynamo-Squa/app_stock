@@ -1,6 +1,6 @@
-import Layout from "../components/Layout";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "./Login.css"; // Importation du CSS dédié
 
 export default function Login() {
   const navigate = useNavigate();
@@ -9,7 +9,7 @@ export default function Login() {
   const [errorMsg, setErrorMsg] = useState("");
 
   const [form, setForm] = useState({
-    email: "",
+    username: "",
     password: "",
   });
 
@@ -42,54 +42,71 @@ export default function Login() {
         return;
       }
 
-      // Stockage du token
       localStorage.setItem("token", data.token);
-
-      // Redirection
       navigate("/dashboard");
 
     } catch (error) {
       console.error("Erreur lors de la connexion :", error);
-      setErrorMsg("Impossible de se connecter au serveur.");
+      setErrorMsg("Impossible de se connecter au serveur distant.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <Layout>
-      <h1 className="mb-4">Connexion</h1>
+    <div className="auth-wrapper">
+      <div className="auth-card">
+        
+        <h1>Connexion</h1>
+        <span className="auth-subtitle">Accéder à la gestion des stocks</span>
 
-      <form onSubmit={handleSubmit} className="form-global">
+        <form onSubmit={handleSubmit}>
 
-        {errorMsg && <p className="text-danger">{errorMsg}</p>}
+          {errorMsg && (
+            <div className="auth-error-alert" role="alert">
+              {errorMsg}
+            </div>
+          )}
 
-        <div className="mb-3">
-          <label className="form-label">Email</label>
-          <input
-            type="email"
-            name="email"
-            className="form-control"
-            onChange={handleChange}
-            required
-          />
-        </div>
+          <div className="mb-4">
+            <label className="form-label">Identifiant / Email</label>
+            <input
+              type="email"
+              name="username"
+              className="form-control"
+              placeholder="nom@exemple.com"
+              value={form.username}
+              onChange={handleChange}
+              autoComplete="email"
+              required
+            />
+          </div>
 
-        <div className="mb-3">
-          <label className="form-label">Mot de passe</label>
-          <input
-            type="password"
-            name="password"
-            className="form-control"
-            onChange={handleChange}
-            required
-          />
-        </div>
+          <div className="mb-4">
+            <label className="form-label">Mot de passe</label>
+            <input
+              type="password"
+              name="password"
+              className="form-control"
+              placeholder="••••••••"
+              value={form.password}
+              onChange={handleChange}
+              autoComplete="current-password"
+              required
+            />
+          </div>
 
-        <button type="submit" className="btn-submit">
-          {loading ? "Connexion..." : "Se connecter"}
-        </button>
-      </form>
-    </Layout>
+          <button 
+            type="submit" 
+            className="btn-auth-submit" 
+            disabled={loading}
+          >
+            {loading ? "Vérification..." : "Se connecter"}
+          </button>
+          
+        </form>
+
+      </div>
+    </div>
   );
 }

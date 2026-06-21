@@ -1,0 +1,176 @@
+/* ==========================================================================
+   PAGE: MOUVEMENTS DE STOCK & POPUP MODALE - RESPONSIVE
+   ========================================================================== */
+
+/* En-tête avec disposition flexible */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.page-header h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--white);
+  margin: 0;
+}
+
+/* Bouton d'action principal (Teinte Signature Or) */
+.btn-accent {
+  background-color: var(--accent);
+  color: var(--dark-1);
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.1s ease;
+}
+
+.btn-accent:hover {
+  opacity: 0.9;
+}
+
+/* Conteneur adaptatif pour le tableau */
+.table-container {
+  background-color: var(--dark-2);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 14px;
+  overflow-x: auto;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  -webkit-overflow-scrolling: touch;
+}
+
+.custom-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.95rem;
+  min-width: 700px; /* Conserve une structure claire sur smartphone */
+}
+
+.custom-table thead th {
+  background-color: rgba(255, 255, 255, 0.02);
+  color: var(--text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.custom-table tbody td {
+  padding: 1.1rem 1.5rem;
+  color: rgba(255, 255, 255, 0.85);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.custom-table tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.01);
+}
+
+/* Badges Entrée/Sortie */
+.movement-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.7rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.badge-entree {
+  background-color: rgba(75, 211, 150, 0.1);
+  color: #4BD396;
+}
+
+.badge-sortie {
+  background-color: rgba(255, 92, 92, 0.1);
+  color: #FF5C5C;
+}
+
+/* ==========================================================================
+   FENÊTRE POP-UP (MODALE PREMIUM)
+   ========================================================================== */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(10, 10, 14, 0.7);
+  backdrop-filter: blur(6px); /* Flou d'arrière-plan moderne */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1050;
+  padding: 1rem;
+}
+
+.popup-card {
+  background-color: var(--dark-2);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 460px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+  animation: popupReveal 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes popupReveal {
+  from { opacity: 0; transform: scale(0.95) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.popup-card h3 {
+  color: var(--white);
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+/* Personnalisation des boutons internes de la Pop-up */
+.btn-danger-custom {
+  background-color: transparent;
+  color: var(--text-muted);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-danger-custom:hover {
+  background-color: rgba(255, 92, 92, 0.1);
+  color: #FF5C5C;
+  border-color: rgba(255, 92, 92, 0.2);
+}
+
+/* ==========================================================================
+   BREAKPOINTS MOBILE
+   ========================================================================== */
+@media (max-width: 576px) {
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .page-header button {
+    width: 100%;
+    text-align: center;
+  }
+
+  .popup-card {
+    padding: 1.5rem;
+  }
+}

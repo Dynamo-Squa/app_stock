@@ -1,24 +1,26 @@
 import Layout from "../components/Layout";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import "./Produits.css"; // Importation du CSS dédié
 
 export default function Produits() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // POPUP MODIFICATION PRODUIT
+  // POPUP MODIFICATION
   const [showEditPopup, setShowEditPopup] = useState(false);
   const [editProduct, setEditProduct] = useState({
     id: null,
-    name: "",
+    nom: "",
     description: "",
-    price: "",
-    quantity: "",
+    prix: "",
+    quantite: "",
+    quantite_min: "",
     unit: "",
-    category: "",
+    categorieId: ""
   });
 
-  // POPUP ALIMENTER STOCK
+  // POPUP STOCK
   const [showStockPopup, setShowStockPopup] = useState(false);
   const [stockForm, setStockForm] = useState({
     product_id: "",
@@ -27,11 +29,16 @@ export default function Produits() {
   });
 
   // ============================
-  //   FETCH PRODUITS (GET)
+  //   FETCH PRODUITS
   // ============================
   const fetchProducts = async () => {
     try {
-      const res = await fetch("http://localhost:5000/products");
+      const res = await fetch("http://localhost:5000/api/products", {
+        headers: {
+          "Authorization": "Bearer " + localStorage.getItem("token")
+        }
+      });
+
       const data = await res.json();
       setProducts(data);
     } catch (err) {
@@ -46,14 +53,17 @@ export default function Produits() {
   }, []);
 
   // ============================
-  //   SUPPRESSION (DELETE)
+  //   DELETE PRODUIT
   // ============================
   const handleDelete = async (id) => {
-    if (!window.confirm("Supprimer ce produit ?")) return;
+    if (!window.confirm("Supprimer définitivement ce produit ?")) return;
 
     try {
-      await fetch(`http://localhost:5000/products/${id}`, {
+      await fetch(`http://localhost:5000/api/products/${id}`, {
         method: "DELETE",
+        headers: {
+          "Authorization": "Bearer " + localStorage.getItem("token")
+        }
       });
 
       setProducts(products.filter((p) => p.id !== id));
@@ -63,49 +73,47 @@ export default function Produits() {
   };
 
   // ============================
-  //   OUVRIR POPUP MODIFICATION
+  //   OPEN EDIT POPUP
   // ============================
   const openEditPopup = (p) => {
     setEditProduct({
       id: p.id,
-      name: p.name,
+      nom: p.nom,
       description: p.description,
-      price: p.price,
-      quantity: p.quantity,
+      prix: p.prix,
+      quantite: p.quantite,
+      quantite_min: p.quantite_min,
       unit: p.unit,
-      category: p.category,
+      categorieId: p.categorieId
     });
     setShowEditPopup(true);
   };
 
   // ============================
-  //   MODIFIER PRODUIT (PUT)
+  //   EDIT PRODUIT
   // ============================
   const handleEdit = async (e) => {
     e.preventDefault();
 
     try {
-      await fetch(`http://localhost:5000/products/${editProduct.id}`, {
+      await fetch(`http://localhost:5000/api/products/${editProduct.id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(editProduct),
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + localStorage.getItem("token")
+        },
+        body: JSON.stringify(editProduct)
       });
 
-      setProducts(
-        products.map((p) =>
-          p.id === editProduct.id ? editProduct : p
-        )
-      );
-
+      fetchProducts();
       setShowEditPopup(false);
     } catch (err) {
       console.error("Erreur modification :", err);
-      alert("Impossible de modifier le produit.");
     }
   };
 
   // ============================
-  //   OUVRIR POPUP ALIMENTER STOCK
+  //   OPEN STOCK POPUP
   // ============================
   const openStockPopup = (p) => {
     setStockForm({
@@ -117,186 +125,213 @@ export default function Produits() {
   };
 
   // ============================
-  //   AJOUT MOUVEMENT (ENTRÉE)
+  //   AJOUT STOCK
   // ============================
   const handleStockSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      await fetch("http://localhost:5000/mouvements", {
+      await fetch("http://localhost:5000/api/movements", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + localStorage.getItem("token")
+        },
         body: JSON.stringify({
           ...stockForm,
           type_mouvement: "ENTREE",
         }),
       });
 
-      // Recharger les produits après mise à jour du stock
       fetchProducts();
-
       setShowStockPopup(false);
     } catch (err) {
       console.error("Erreur mouvement :", err);
-      alert("Impossible d'alimenter le stock.");
     }
   };
 
   return (
     <Layout>
       <div className="page-header">
-        <h1>Produits</h1>
-        <Link to="/produits/ajouter" className="btn-accent">
+        <div>
+          <h1>Catalogue Produits</h1>
+          <p className="page-subtitle">Visualisez, éditez et surveillez les seuils critiques de vos stocks</p>
+        </div>
+        <Link to="/produits/ajouter" className="btn-accent" style={{ textDecoration: "none" }}>
           + Ajouter un produit
         </Link>
       </div>
 
-      {loading && <p>Chargement...</p>}
+      {loading && (
+        <div className="loading-container">
+          <p>Chargement de l'inventaire...</p>
+        </div>
+      )}
 
-      {!loading && products.length === 0 && <p>Aucun produit trouvé.</p>}
+      {!loading && products.length === 0 && (
+        <div className="loading-container">
+          <p>Aucun produit enregistré dans la base de données.</p>
+        </div>
+      )}
 
       {!loading && products.length > 0 && (
-        <table className="table align-middle table-striped produits-table">
-          <thead>
-            <tr>
-              <th>Image</th>
-              <th>Nom</th>
-              <th>Description</th>
-              <th>Prix</th>
-              <th>Quantité</th>
-              <th>Catégorie</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {products.map((p) => (
-              <tr key={p.id}>
-                <td>
-                  <img src={p.image} alt={p.name} className="produit-img" />
-                </td>
-                <td className="fw-bold">{p.name}</td>
-                <td>{p.description}</td>
-                <td>{p.price} €</td>
-                <td className={p.quantity <= (p.quantite_min || 5) ? "stock-low" : ""}>
-                  {p.quantity} {p.unit}
-
-                  {p.quantity <= (p.quantite_min || 5) && (
-                    <span className="badge-low">Stock bas</span>
-                  )}
-                </td>
-                <td>{p.category}</td>
-                <td className="d-flex flex-column gap-2">
-
-                  <button
-                    className="btn-accent"
-                    onClick={() => openStockPopup(p)}
-                  >
-                    Alimenter stock
-                  </button>
-
-                  <button
-                    className="btn-warning-custom"
-                    onClick={() => openEditPopup(p)}
-                  >
-                    Modifier
-                  </button>
-
-                  <button
-                    className="btn-danger-custom"
-                    onClick={() => handleDelete(p.id)}
-                  >
-                    🗑
-                  </button>
-
-                </td>
+        <div className="table-container">
+          <table className="produits-table">
+            <thead>
+              <tr>
+                <th>Famille / Catégorie</th>
+                <th>Désignation</th>
+                <th>Description</th>
+                <th>Prix unitaire</th>
+                <th>Stock disponible</th>
+                <th>Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+
+            <tbody>
+              {products.map((p) => {
+                const isLow = Number(p.quantite) <= Number(p.quantite_min);
+                return (
+                  <tr key={p.id}>
+                    <td>
+                      <div className="d-flex align-items-center">
+                        {p.categorieIcone && (
+                          <img
+                            src={`http://localhost:5000/uploads/categories/${p.categorieIcone}`}
+                            alt=""
+                            className="category-icon"
+                          />
+                        )}
+                        <span className="ms-2 fw-medium">{p.categorieNom || "Général"}</span>
+                      </div>
+                    </td>
+
+                    <td className="product-name">{p.nom}</td>
+                    <td className="text-comment">{p.description || "—"}</td>
+                    <td className="fw-bold">{Number(p.prix).toFixed(2)} €</td>
+
+                    <td className={isLow ? "stock-warning-row" : ""}>
+                      {p.quantite} <span className="text-muted" style={{ fontSize: "0.85rem" }}>{p.unit}</span>
+                      {isLow && <span className="badge-low">Seuil bas</span>}
+                    </td>
+
+                    <td>
+                      <div className="actions-cell">
+                        <button className="btn-accent" onClick={() => openStockPopup(p)}>
+                          Réapprovisionner
+                        </button>
+                        <button className="btn-warning-custom" onClick={() => openEditPopup(p)}>
+                          ✏️
+                        </button>
+                        <button className="btn-danger-custom" onClick={() => handleDelete(p.id)} title="Supprimer">
+                          ❌​
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       )}
 
       {/* ============================
-          POP-UP MODIFICATION PRODUIT
+          POPUP MODIFICATION PRODUIT
       ============================ */}
       {showEditPopup && (
-        <div className="popup-overlay">
-          <div className="popup-card">
-            <h3>Modifier le produit</h3>
+        <div className="popup-overlay" onClick={() => setShowEditPopup(false)}>
+          <div className="popup-card" onClick={(e) => e.stopPropagation()}>
+            <h3>Modifier la fiche produit</h3>
 
             <form onSubmit={handleEdit} className="d-flex flex-column gap-3">
+              
+              <div className="form-group-popup">
+                <label>Nom du produit</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  value={editProduct.nom}
+                  onChange={(e) => setEditProduct({ ...editProduct, nom: e.target.value })}
+                  required
+                />
+              </div>
 
-              <input
-                type="text"
-                className="form-control"
-                value={editProduct.name}
-                onChange={(e) =>
-                  setEditProduct({ ...editProduct, name: e.target.value })
-                }
-                required
-              />
+              <div className="form-group-popup">
+                <label>Description</label>
+                <textarea
+                  className="form-control"
+                  rows="2"
+                  value={editProduct.description}
+                  onChange={(e) => setEditProduct({ ...editProduct, description: e.target.value })}
+                />
+              </div>
 
-              <input
-                type="text"
-                className="form-control"
-                value={editProduct.description}
-                onChange={(e) =>
-                  setEditProduct({ ...editProduct, description: e.target.value })
-                }
-                required
-              />
+              <div className="row g-2">
+                <div className="col-6 form-group-popup">
+                  <label>Prix unitaire (€)</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    className="form-control"
+                    value={editProduct.prix}
+                    onChange={(e) => setEditProduct({ ...editProduct, prix: e.target.value })}
+                    required
+                  />
+                </div>
+                <div className="col-6 form-group-popup">
+                  <label>Unité de mesure</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Ex: kg, pcs"
+                    value={editProduct.unit}
+                    onChange={(e) => setEditProduct({ ...editProduct, unit: e.target.value })}
+                    required
+                  />
+                </div>
+              </div>
 
-              <input
-                type="number"
-                className="form-control"
-                value={editProduct.price}
-                onChange={(e) =>
-                  setEditProduct({ ...editProduct, price: e.target.value })
-                }
-                required
-              />
+              <div className="row g-2">
+                <div className="col-6 form-group-popup">
+                  <label>Stock actuel</label>
+                  <input
+                    type="number"
+                    className="form-control"
+                    value={editProduct.quantite}
+                    onChange={(e) => setEditProduct({ ...editProduct, quantite: e.target.value })}
+                    required
+                  />
+                </div>
+                <div className="col-6 form-group-popup">
+                  <label>Alerte stock minimal</label>
+                  <input
+                    type="number"
+                    className="form-control"
+                    value={editProduct.quantite_min}
+                    onChange={(e) => setEditProduct({ ...editProduct, quantite_min: e.target.value })}
+                    required
+                  />
+                </div>
+              </div>
 
-              <input
-                type="number"
-                className="form-control"
-                value={editProduct.quantity}
-                onChange={(e) =>
-                  setEditProduct({ ...editProduct, quantity: e.target.value })
-                }
-                required
-              />
+              <div className="form-group-popup">
+                <label>ID de la catégorie</label>
+                <input
+                  type="number"
+                  className="form-control"
+                  value={editProduct.categorieId}
+                  onChange={(e) => setEditProduct({ ...editProduct, categorieId: e.target.value })}
+                  required
+                />
+              </div>
 
-              <input
-                type="text"
-                className="form-control"
-                value={editProduct.unit}
-                onChange={(e) =>
-                  setEditProduct({ ...editProduct, unit: e.target.value })
-                }
-                required
-              />
-
-              <input
-                type="text"
-                className="form-control"
-                value={editProduct.category}
-                onChange={(e) =>
-                  setEditProduct({ ...editProduct, category: e.target.value })
-                }
-                required
-              />
-
-              <div className="d-flex justify-content-end gap-2">
-                <button
-                  type="button"
-                  className="btn-danger-custom"
-                  onClick={() => setShowEditPopup(false)}
-                >
+              <div className="d-flex justify-content-end gap-2 mt-2">
+                <button type="button" className="btn-danger-custom" onClick={() => setShowEditPopup(false)}>
                   Annuler
                 </button>
-
                 <button type="submit" className="btn-accent">
-                  Modifier
+                  Sauvegarder les modifications
                 </button>
               </div>
 
@@ -306,47 +341,45 @@ export default function Produits() {
       )}
 
       {/* ============================
-          POP-UP ALIMENTER STOCK
+          POPUP ALIMENTER STOCK
       ============================ */}
       {showStockPopup && (
-        <div className="popup-overlay">
-          <div className="popup-card">
-            <h3>Alimenter le stock</h3>
+        <div className="popup-overlay" onClick={() => setShowStockPopup(false)}>
+          <div className="popup-card" onClick={(e) => e.stopPropagation()}>
+            <h3>Réapprovisionnement rapide</h3>
 
             <form onSubmit={handleStockSubmit} className="d-flex flex-column gap-3">
 
-              <input
-                type="number"
-                className="form-control"
-                placeholder="Quantité à ajouter"
-                value={stockForm.quantite}
-                onChange={(e) =>
-                  setStockForm({ ...stockForm, quantite: e.target.value })
-                }
-                required
-              />
+              <div className="form-group-popup">
+                <label>Quantité à ajouter au stock disponible</label>
+                <input
+                  type="number"
+                  className="form-control"
+                  placeholder="Ex: 50"
+                  min="1"
+                  value={stockForm.quantite}
+                  onChange={(e) => setStockForm({ ...stockForm, quantite: e.target.value })}
+                  required
+                />
+              </div>
 
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Commentaire (optionnel)"
-                value={stockForm.commentaire}
-                onChange={(e) =>
-                  setStockForm({ ...stockForm, commentaire: e.target.value })
-                }
-              />
+              <div className="form-group-popup">
+                <label>Note d'accompagnement / Justificatif</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Ex: Réception livraison fournisseur"
+                  value={stockForm.commentaire}
+                  onChange={(e) => setStockForm({ ...stockForm, commentaire: e.target.value })}
+                />
+              </div>
 
-              <div className="d-flex justify-content-end gap-2">
-                <button
-                  type="button"
-                  className="btn-danger-custom"
-                  onClick={() => setShowStockPopup(false)}
-                >
+              <div className="d-flex justify-content-end gap-2 mt-2">
+                <button type="button" className="btn-danger-custom" onClick={() => setShowStockPopup(false)}>
                   Annuler
                 </button>
-
                 <button type="submit" className="btn-accent">
-                  Ajouter
+                  Injecter les unités
                 </button>
               </div>
 
@@ -354,7 +387,6 @@ export default function Produits() {
           </div>
         </div>
       )}
-
     </Layout>
   );
 }

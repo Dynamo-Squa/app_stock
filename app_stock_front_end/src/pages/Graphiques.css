@@ -1,0 +1,74 @@
+/* ==========================================================================
+   PAGE: GRAPHIQUES & STATISTIQUES - RESPONSIVE
+   ========================================================================== */
+
+/* Titre de la page */
+.page-header {
+  margin-bottom: 2.5rem;
+}
+
+.page-header h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--white);
+  margin: 0;
+}
+
+/* Grille de disposition des graphiques */
+.charts-layout {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  width: 100%;
+}
+
+/* Les cartes contenant les graphiques */
+.chart-card {
+  background-color: var(--dark-2);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 14px;
+  padding: 1.5rem;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+}
+
+/* Le grand graphique d'historique prend toute la largeur sur grand écran */
+.chart-card.full-width {
+  grid-column: 1 / -1;
+}
+
+.chart-card h3 {
+  color: var(--white);
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+/* Conteneur pour verrouiller la hauteur du canvas et garantir le responsive */
+.chart-wrapper {
+  position: relative;
+  height: 320px; /* Hauteur parfaite pour la lisibilité desktop et mobile */
+  width: 100%;
+}
+
+/* Spécificité pour le Pie chart pour éviter qu'il ne s'étire anormalement */
+.chart-wrapper.pie-wrapper {
+  height: 280px;
+}
+
+/* ==========================================================================
+   BREAKPOINTS TARGET MOBILE
+   ========================================================================== */
+@media (max-width: 992px) {
+  .charts-layout {
+    grid-template-columns: 1fr; /* Tout s'empile verticalement sur une seule colonne */
+    gap: 1.25rem;
+  }
+  
+  .chart-card {
+    padding: 1.25rem;
+  }
+  
+  .chart-wrapper {
+    height: 260px; /* Légère réduction de hauteur sur smartphone */
+  }
+}

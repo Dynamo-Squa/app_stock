@@ -1,0 +1,124 @@
+/* ==========================================================================
+   PAGE: AUTHENTIFICATION (LOGIN) - RESPONSIVE
+   ========================================================================== */
+
+/* Structure de centrage de l'écran de connexion - PLEIN ÉCRAN */
+.auth-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh; /* Prend tout l'écran verticalement */
+  background-color: var(--dark-1); /* Fond sombre de l'application */
+  padding: 1.5rem;
+  width: 100%;
+}
+
+.auth-card {
+  background-color: var(--dark-2);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 3rem 2.5rem;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.4);
+  text-align: center;
+}
+
+/* Titre de la page d'authentification */
+.auth-card h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 0.5rem;
+}
+
+.auth-subtitle {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 2rem;
+  display: block;
+}
+
+/* Bloc d'alerte en cas d'erreur de saisie */
+.auth-error-alert {
+  background-color: rgba(255, 92, 92, 0.1);
+  border: 1px solid rgba(255, 92, 92, 0.2);
+  color: #FF5C5C;
+  font-size: 0.88rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  text-align: left;
+  font-weight: 500;
+}
+
+/* Alignement des labels à gauche pour les formulaires centrés */
+.auth-card .mb-4 {
+  text-align: left;
+}
+
+/* Inputs & Formulaires */
+.auth-card .form-label {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.5rem;
+}
+
+.auth-card .form-control {
+  background-color: #121216 !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: var(--white) !important;
+  border-radius: 8px;
+  padding: 0.8rem 1rem;
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  width: 100%;
+}
+
+.auth-card .form-control:focus {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15) !important;
+}
+
+/* Bouton de connexion pleine largeur */
+.btn-auth-submit {
+  background-color: var(--accent);
+  color: var(--dark-1);
+  border: none;
+  border-radius: 8px;
+  padding: 0.9rem;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.1s ease;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.btn-auth-submit:hover {
+  opacity: 0.9;
+}
+
+.btn-auth-submit:active {
+  transform: scale(0.99);
+}
+
+/* ==========================================================================
+   BREAKPOINTS MOBILE
+   ========================================================================== */
+@media (max-width: 480px) {
+  .auth-wrapper {
+    padding: 0.75rem;
+  }
+  
+  .auth-card {
+    padding: 2rem 1.5rem;
+    border-radius: 12px;
+    box-shadow: none; /* Simplification visuelle sur petit écran */
+    border: none;
+    background-color: transparent; /* Se fond directement dans l'application */
+  }
+}
