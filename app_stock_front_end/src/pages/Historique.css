@@ -1,0 +1,118 @@
+/* ==========================================================================
+   PAGE: HISTORIQUE DES MOUVEMENTS - RESPONSIVE
+   ========================================================================== */
+
+/* En-tête de la page */
+.page-header {
+  margin-bottom: 2.5rem;
+}
+
+.page-header h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--white);
+  margin: 0;
+}
+
+/* Conteneur adaptatif pour le tableau (Empêche la casse sur mobile) */
+.table-container {
+  background-color: var(--dark-2);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 14px;
+  overflow-x: auto; /* Déclenche un scroll horizontal doux sur petit écran */
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  /* Amélioration du défilement sur iOS */
+  -webkit-overflow-scrolling: touch; 
+}
+
+/* Tableau personnalisé */
+.custom-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.95rem;
+  min-width: 650px; /* Force une largeur minimale pour garder les colonnes lisibles sur mobile */
+}
+
+/* En-tête du tableau */
+.custom-table thead th {
+  background-color: rgba(255, 255, 255, 0.02);
+  color: var(--text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Corps du tableau */
+.custom-table tbody td {
+  padding: 1.1rem 1.5rem;
+  color: rgba(255, 255, 255, 0.85);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+/* Effet de survol sur les lignes */
+.custom-table tbody tr {
+  transition: background-color 0.15s ease;
+}
+
+.custom-table tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.01);
+}
+
+/* Badges personnalisés Premium pour les flux */
+.movement-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.badge-entree {
+  background-color: rgba(75, 211, 150, 0.1);
+  color: #4BD396;
+  border: 1px solid rgba(75, 211, 150, 0.15);
+}
+
+.badge-sortie {
+  background-color: rgba(255, 92, 92, 0.1);
+  color: #FF5C5C;
+  border: 1px solid rgba(255, 92, 92, 0.15);
+}
+
+/* Style de texte spécifique */
+.product-name {
+  color: var(--white);
+  font-weight: 600;
+}
+
+.text-comment {
+  color: var(--text-muted);
+  font-style: italic;
+  max-width: 240px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* Coupe proprement les commentaires trop longs */
+}
+
+/* ==========================================================================
+   BREAKPOINTS TARGET MOBILE
+   ========================================================================== */
+@media (max-width: 576px) {
+  .page-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  /* Réduction légère du rembourrage interne pour optimiser l'espace écran */
+  .custom-table thead th,
+  .custom-table tbody td {
+    padding: 0.85rem 1rem;
+  }
+}

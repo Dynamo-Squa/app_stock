@@ -1,0 +1,136 @@
+/* ==========================================================================
+   PAGE: CATEGORIES - RESPONSIVE
+   ========================================================================== */
+
+/* En-tête de la page */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2.5rem;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+}
+
+.page-header h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--white);
+  margin: 0;
+}
+
+/* Liste des catégories (Cartes) */
+.category-card {
+  background-color: var(--dark-2);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.category-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+/* Icône de la catégorie */
+.category-icon {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 50%;
+  background-color: var(--dark-1);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  padding: 2px;
+  flex-shrink: 0; 
+}
+
+.category-card h5 {
+  color: var(--white);
+  font-weight: 600;
+  margin: 0 0 0.25rem 0;
+}
+
+.category-card .text-muted {
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* Modals / Popups (Effet Frosted Glass) */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(10, 10, 12, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1050;
+  padding: 1rem; /* Sécurité pour pas que le popup colle aux bords sur mobile */
+}
+
+.popup-card {
+  background-color: #1a1a22;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 480px;
+  box-width: 100%;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+}
+
+.popup-card h3 {
+  color: var(--white);
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+.popup-card .form-control {
+  background-color: #121216 !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: var(--white) !important;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+}
+
+.popup-card .form-control:focus {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15) !important;
+}
+
+/* ==========================================================================
+   BREAKPOINT: TABLETTES ET SMARTPHONES
+   ========================================================================== */
+@media (max-width: 768px) {
+  .category-card {
+    flex-direction: column; 
+    align-items: flex-start; 
+    gap: 1.25rem;
+  }
+
+  .category-card > div:last-child {
+    width: 100%; /* Les boutons prennent toute la largeur sur mobile */
+    display: flex;
+    gap: 0.75rem;
+  }
+
+  .category-card > div:last-child button {
+    flex: 1; /* Les boutons font la même taille côte à côte */
+    text-align: center;
+  }
+  
+  .page-header button {
+    width: 100%; /* Le bouton "Ajouter" passe en pleine largeur sur mobile */
+  }
+}

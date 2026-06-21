@@ -1,0 +1,174 @@
+/* ==========================================================================
+   PAGE: CATALOGUE DE PRODUITS - RESPONSIVE
+   ========================================================================== */
+
+/* En-tête flexible */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+/* Alignement et dimensionnement des icônes de catégorie */
+.category-icon {
+  width: 26px;
+  height: 26px;
+  object-fit: cover;
+  border-radius: 6px;
+  background-color: rgba(255, 255, 255, 0.05);
+  vertical-align: middle;
+}
+
+/* Conteneur adaptatif anti-écrasement */
+.table-container {
+  background-color: var(--dark-2);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 14px;
+  overflow-x: auto;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  -webkit-overflow-scrolling: touch;
+}
+
+.produits-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.95rem;
+  min-width: 850px; /* Conserve une largeur de confort pour les colonnes complexes */
+}
+
+.produits-table thead th {
+  background-color: rgba(255, 255, 255, 0.02);
+  color: var(--text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.produits-table tbody td {
+  padding: 1rem 1.5rem;
+  color: rgba(255, 255, 255, 0.85);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.produits-table tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.01);
+}
+
+/* ==========================================================================
+   GESTION DES ALERTS DE STOCK (VISUEL PREMIUM)
+   ========================================================================== */
+.stock-warning-row {
+  color: #FF9F43 !important; /* Orange ambré chaud */
+  font-weight: 600;
+}
+
+.badge-low {
+  display: inline-block;
+  background-color: rgba(255, 159, 67, 0.1);
+  color: #FF9F43;
+  border: 1px solid rgba(255, 159, 67, 0.2);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  margin-left: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+/* Groupe d'actions compact en ligne sur Desktop */
+.actions-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.actions-cell button {
+  padding: 0.5rem 0.85rem;
+  font-size: 0.85rem;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+/* Bouton spécifique modification */
+.btn-warning-custom {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--white);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-warning-custom:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Modales d'édition et d'alimentation */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(10, 10, 14, 0.75);
+  backdrop-filter: blur(6px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1050;
+  padding: 1rem;
+}
+
+.popup-card {
+  background-color: var(--dark-2);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto; /* Permet le défilement si le formulaire d'édition dépasse sur petit écran */
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+}
+
+/* Style des groupes de champs (Label au-dessus de l'input) */
+.form-group-popup {
+  display: flex;
+  flex-column: column;
+  gap: 0.4rem;
+  text-align: left;
+}
+
+.form-group-popup label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ==========================================================================
+   BREAKPOINTS MOBILE
+   ========================================================================== */
+@media (max-width: 768px) {
+  .actions-cell {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+  
+  .actions-cell button {
+    width: 100%;
+    text-align: center;
+  }
+}

@@ -1,54 +1,71 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import "./Layout.css";
 
 export default function Layout({ children }) {
-  return (
-    <div className="d-flex layout-container">
-      {/* Sidebar */}
-      <aside className="sidebar bg-dark text-white p-3">
-        <h3 className="mb-4">StockApp</h3>
+  const navigate = useNavigate();
+  const location = useLocation();
 
-        <nav className="nav flex-column">
-          <Link className="nav-link text-white" to="/dashboard">Dashboard</Link>
-          <Link className="nav-link text-white" to="/produits">Produits</Link>
-          <Link className="nav-link text-white" to="/categories">Catégories</Link>
+  // Fonction de déconnexion propre
+  const handleLogout = () => {
+    localStorage.removeItem("token"); 
+    navigate("/login"); 
+  };
+
+  // Helper pour attribuer la classe active aux liens de la sidebar
+  const isActive = (path) => location.pathname === path ? "active" : "";
+
+  return (
+    <div className="layout-container">
+      
+      {/* SIDEBAR: NAVIGATION PRINCIPALE (Masquée sur petit mobile ou rétractable) */}
+      <aside className="main-sidebar">
+        <div className="sidebar-brand">
+          <span className="brand-dot"></span>
+          <h3>StockApp</h3>
+        </div>
+
+        <nav className="sidebar-nav">
+          <Link className={`sidebar-link ${isActive("/dashboard")}`} to="/dashboard">
+            <span className="nav-icon"></span> Dashboard
+          </Link>
+          <Link className={`sidebar-link ${isActive("/produits")}`} to="/produits">
+            <span className="nav-icon"></span> Produits
+          </Link>
+          <Link className={`sidebar-link ${isActive("/mouvements")}`} to="/mouvements">
+            <span className="nav-icon"></span> Mouvements
+          </Link>
+          <Link className={`sidebar-link ${isActive("/categories")}`} to="/categories">
+            <span className="nav-icon"></span> Catégories
+          </Link>
         </nav>
       </aside>
 
-      {/* Contenu principal */}
-      <div className="main-content flex-grow-1">
+      {/* CONTENEUR DU CONTENU DE DROITE */}
+      <div className="main-content-wrapper">
         
-        {/* Navbar Bootstrap */}
-<nav className="navbar navbar-expand-lg custom-navbar">
-  <div className="container-fluid navbar-inner">
+        {/* NAVBAR SUPÉRIEURE: IDENTITÉ & SESSION */}
+        <header className="top-navbar">
+          <div className="navbar-left-section">
+            <span className="app-platform-badge">StockApp Management</span>
+          </div>
 
-    {/* Logo à gauche */}
-    <div className="navbar-left">
-      <span className="navbar-brand">AssoStock</span>
-    </div>
+          <div className="navbar-right-section">
+            <Link to="/profil" className={`navbar-profile-link ${isActive("/user")}`}>
+              <div className="avatar-mini">U</div>
+              <span>Mon Profil</span>
+            </Link>
+            
+            <button onClick={handleLogout} className="btn-logout-trigger" title="Se déconnecter">
+               Déconnexion
+            </button>
+          </div>
+        </header>
 
-    {/* Liens au centre */}
-    <div className="navbar-center">
-      <Link to="/dashboard" className="nav-link">Dashboard</Link>
-      <Link to="/produits" className="nav-link">Produits</Link>
-      <Link to="/categories" className="nav-link">Catégories</Link>
-    </div>
-
-    {/* Profil + Déconnexion à droite */}
-    <div className="navbar-right">
-      <Link to="/profil" className="nav-link">Profil</Link>
-      <Link to="/logout" className="nav-link">Déconnexion</Link>
-    </div>
-
-  </div>
-</nav>
-
-
-
-        {/* Page */}
-        <main className="p-4">
+        {/* INJECTION DYNAMIQUE DES PAGES ENFANTS */}
+        <main className="content-body">
           {children}
         </main>
+
       </div>
     </div>
   );

@@ -1,0 +1,123 @@
+/* ==========================================================================
+   PAGE: PROFIL UTILISATEUR - RESPONSIVE
+   ========================================================================== */
+
+/* Conteneur principal centré ou aligné */
+.profile-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 2rem 0;
+  width: 100%;
+}
+
+/* Carte de profil premium */
+.profile-card {
+  background-color: var(--dark-2);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 550px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+/* En-tête de la carte avec l'avatar */
+.profile-header-banner {
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.05) 0%, rgba(18, 18, 22, 0) 100%);
+  padding: 2.5rem 2rem;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Avatar circulaire avec dégradé subtil */
+.profile-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent) 0%, #b89732 100%);
+  color: var(--dark-1);
+  font-size: 1.8rem;
+  font-weight: 700;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-transform: uppercase;
+  box-shadow: 0 8px 20px rgba(212, 175, 55, 0.2);
+}
+
+.profile-header-banner h2 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--white);
+  margin: 0;
+}
+
+/* Liste des détails utilisateur */
+.profile-details {
+  padding: 2rem;
+}
+
+.profile-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.2rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.profile-info-row:last-child {
+  border-bottom: none;
+}
+
+.profile-info-label {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.profile-info-value {
+  color: var(--white);
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+/* Badge de rôle personnalisé */
+.role-badge-user {
+  background-color: rgba(212, 175, 55, 0.1);
+  color: var(--accent);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  padding: 0.3rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ==========================================================================
+   BREAKPOINTS MOBILE
+   ========================================================================== */
+@media (max-width: 576px) {
+  .profile-card {
+    border-radius: 12px;
+  }
+
+  .profile-header-banner {
+    padding: 2rem 1rem;
+  }
+
+  .profile-details {
+    padding: 1.5rem;
+  }
+
+  .profile-info-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+  }
+}

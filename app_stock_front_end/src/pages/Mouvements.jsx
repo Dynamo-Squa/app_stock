@@ -1,5 +1,6 @@
 import Layout from "../components/Layout";
 import { useEffect, useState } from "react";
+import "./Mouvements.css"; // Importation du CSS dédié côte à côte
 
 export default function Mouvements() {
   const [mouvements, setMouvements] = useState([]);
@@ -20,8 +21,15 @@ export default function Mouvements() {
   // ============================
   const fetchData = async () => {
     try {
-      const resM = await fetch("http://localhost:5000/mouvements");
-      const resP = await fetch("http://localhost:5000/products");
+      const headers = {
+        "Authorization": "Bearer " + localStorage.getItem("token")
+      };
+
+      // CORRECTION ICI : Ajout de /api/ et correction de /mouvements en /movements
+      const [resM, resP] = await Promise.all([
+        fetch("http://localhost:5000/api/movements", { headers }),
+        fetch("http://localhost:5000/api/products", { headers })
+      ]);
 
       const dataM = await resM.json();
       const dataP = await resP.json();
@@ -46,18 +54,23 @@ export default function Mouvements() {
     e.preventDefault();
 
     try {
-      const res = await fetch("http://localhost:5000/mouvements", {
+      // CORRECTION ICI : Ajout de /api/movements pour la création du flux
+      const res = await fetch("http://localhost:5000/api/movements", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + localStorage.getItem("token")
+        },
         body: JSON.stringify(form),
       });
 
+      if (!res.ok) throw new Error("Erreur serveur lors de l'ajout");
       const created = await res.json();
 
-      // Mise à jour instantanée
+      // Mise à jour instantanée du tableau
       setMouvements([created, ...mouvements]);
 
-      // Reset + fermeture
+      // Reset du formulaire + fermeture de la pop-up
       setForm({
         product_id: "",
         type_mouvement: "ENTREE",
@@ -74,109 +87,123 @@ export default function Mouvements() {
   return (
     <Layout>
       <div className="page-header">
-        <h1>Mouvements de stock</h1>
+        <div>
+          <h1>Mouvements de stock</h1>
+          <p className="page-subtitle">Pilotez les entrées et sorties de marchandises instantanément</p>
+        </div>
         <button className="btn-accent" onClick={() => setShowPopup(true)}>
-          + Ajouter un mouvement
+          + Effectuer un mouvement
         </button>
       </div>
 
-      {loading && <p>Chargement...</p>}
+      {loading && (
+        <div className="loading-container">
+          <p>Chargement du registre des flux...</p>
+        </div>
+      )}
 
       {!loading && mouvements.length === 0 && (
-        <p>Aucun mouvement enregistré.</p>
+        <div className="loading-container">
+          <p>Aucun mouvement enregistré pour le moment.</p>
+        </div>
       )}
 
       {!loading && mouvements.length > 0 && (
-        <table className="table table-striped align-middle">
-          <thead>
-            <tr>
-              <th>Produit</th>
-              <th>Type</th>
-              <th>Quantité</th>
-              <th>Date</th>
-              <th>Commentaire</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {mouvements.map((m) => (
-              <tr key={m.id}>
-                <td>{m.product_name}</td>
-                <td>
-                  {m.type_mouvement === "ENTREE" ? "Entrée" : "Sortie"}
-                </td>
-                <td>{m.quantite}</td>
-                <td>{new Date(m.date).toLocaleString()}</td>
-                <td>{m.commentaire || "-"}</td>
+        <div className="table-container">
+          <table className="custom-table">
+            <thead>
+              <tr>
+                <th>Produit</th>
+                <th>Type de flux</th>
+                <th>Quantité</th>
+                <th>Date d'action</th>
+                <th>Commentaire / Motif</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+
+            <tbody>
+              {mouvements.map((m) => (
+                <tr key={m.id}>
+                  <td className="product-name">{m.product_name}</td>
+                  <td>
+                    {m.type_mouvement === "ENTREE" ? (
+                      <span className="movement-badge badge-entree">Entrée</span>
+                    ) : (
+                      <span className="movement-badge badge-sortie">Sortie</span>
+                    )}
+                  </td>
+                  <td className="fw-bold">{m.quantite}</td>
+                  <td>{new Date(m.date).toLocaleString("fr-FR")}</td>
+                  <td className="text-comment" title={m.commentaire}>
+                    {m.commentaire || "—"}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
 
       {/* ============================
-          POP-UP AJOUT MOUVEMENT
+          POP-UP MODALE D'AJOUT
       ============================ */}
       {showPopup && (
-        <div className="popup-overlay">
-          <div className="popup-card">
-            <h3>Ajouter un mouvement</h3>
+        <div className="popup-overlay" onClick={() => setShowPopup(false)}>
+          <div className="popup-card" onClick={(e) => e.stopPropagation()}>
+            <h3>Enregistrer un flux</h3>
 
             <form onSubmit={handleSubmit} className="d-flex flex-column gap-3">
+              
+              <div>
+                <select
+                  className="form-select"
+                  value={form.product_id}
+                  onChange={(e) => setForm({ ...form, product_id: e.target.value })}
+                  required
+                >
+                  <option value="">Sélectionner le produit ciblé...</option>
+                  {products.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-              {/* PRODUIT */}
-              <select
-                className="form-select"
-                value={form.product_id}
-                onChange={(e) =>
-                  setForm({ ...form, product_id: e.target.value })
-                }
-                required
-              >
-                <option value="">Sélectionner un produit</option>
-                {products.map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.name}
-                  </option>
-                ))}
-              </select>
+              <div>
+                <select
+                  className="form-select"
+                  value={form.type_mouvement}
+                  onChange={(e) => setForm({ ...form, type_mouvement: e.target.value })}
+                >
+                  <option value="ENTREE">📈 Entrée de stock (Réapprovisionnement)</option>
+                  <option value="SORTIE">📉 Sortie de stock (Distribution / Perte)</option>
+                </select>
+              </div>
 
-              {/* TYPE */}
-              <select
-                className="form-select"
-                value={form.type_mouvement}
-                onChange={(e) =>
-                  setForm({ ...form, type_mouvement: e.target.value })
-                }
-              >
-                <option value="ENTREE">Entrée</option>
-                <option value="SORTIE">Sortie</option>
-              </select>
+              <div>
+                <input
+                  type="number"
+                  className="form-control"
+                  placeholder="Quantité transférée"
+                  min="1"
+                  value={form.quantite}
+                  onChange={(e) => setForm({ ...form, quantite: e.target.value })}
+                  required
+                />
+              </div>
 
-              {/* QUANTITE */}
-              <input
-                type="number"
-                className="form-control"
-                placeholder="Quantité"
-                value={form.quantite}
-                onChange={(e) =>
-                  setForm({ ...form, quantite: e.target.value })
-                }
-                required
-              />
+              <div>
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Note, bon de livraison, motif..."
+                  value={form.commentaire}
+                  onChange={(e) => setForm({ ...form, commentaire: e.target.value })}
+                />
+              </div>
 
-              {/* COMMENTAIRE */}
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Commentaire (optionnel)"
-                value={form.commentaire}
-                onChange={(e) =>
-                  setForm({ ...form, commentaire: e.target.value })
-                }
-              />
-
-              <div className="d-flex justify-content-end gap-2">
+              <div className="d-flex justify-content-end gap-2 mt-2">
                 <button
                   type="button"
                   className="btn-danger-custom"
@@ -184,9 +211,8 @@ export default function Mouvements() {
                 >
                   Annuler
                 </button>
-
                 <button type="submit" className="btn-accent">
-                  Ajouter
+                  Confirmer le flux
                 </button>
               </div>
 
